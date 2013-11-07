@@ -546,8 +546,12 @@
 
 	function create_temp_csv(){
 		
-		$q_file = mysql_query("SELECT file_name,program_id FROM file_submission WHERE submission_id='$_GET[file_id]'") or die("Cannot query 521: ".mysql_error());		
-		list($file_name,$prog_id) = mysql_fetch_array($q_file);
+		$q_file = mysql_query("SELECT file_name,program_id,facility_id,month,year FROM file_submission WHERE submission_id='$_GET[file_id]'") or die("Cannot query 521: ".mysql_error());		
+
+		list($file_name,$prog_id,$facility_id,$month,$year) = mysql_fetch_array($q_file);
+		
+		$arr_onlinesys_dataset = $this->get_onlinesys_datasets($prog_id,$facility_id,$month,$year);
+
 		$prog_label = substr($this->arr_program_db[$prog_id],5);
 		$new_name = $prog_label.'.csv';
 
