@@ -550,7 +550,10 @@
 
 		list($file_name,$prog_id,$facility_id,$month,$year) = mysql_fetch_array($q_file);
 		
-		$arr_onlinesys_dataset = $this->get_onlinesys_datasets($prog_id,$facility_id,$month,$year);
+		if($prog_id != 'morbidity'):
+			$str_onlinesys_data = $this->get_onlinesys_datasets($prog_id,$facility_id,$month,$year);
+			$file_name = $this->create_onlinesys_file($str_onlinesys_data,$file_name);
+		endif;
 
 		$prog_label = substr($this->arr_program_db[$prog_id],5);
 		$new_name = $prog_label.'.csv';
@@ -658,6 +661,47 @@
 			echo 'CSV File Not copied to the temp folder!';
 		endif;	
 			
+	}
+
+	function get_onlinesys_datasets($prog_id,$facility_id,$month,$year){
+		$arr_onlinesys_data = array();
+		$tbl_name = $this->arr_program_db[$prog_id];
+		$month_padded = sprintf('%02d', $month); 
+
+		$q_tbl = mysql_query("SELECT REGCODE, PROVCODE CITYCODE, BGYCODE FROM $tbl_name WHERE HFHUDCODE='$facility_id' AND MONTH=$month AND YEAR='$year'") or die("Cannot query 666: ".mysql_error());
+	
+		list($reg_code,$prov_code,$citymun_code,$bgy_code) = mysql_fetch_array($q_tbl);
+
+		array_push($arr_onlinesys_data,"'".$facility_id."'","'".$reg_code."'","'".$prov_code."'","'".$citymun_code."'","'".$bgy_code."'","'".$month."'","'".$year."'");
+
+
+		//choose data sets in lib_indicator table for inclusion
+
+		$q_data_set = mysql_query("SELECT indicator_code FROM lib_indicator WHERE exist_onlinesys='Y' AND prog_id='$prog_id' ORDER BY sequence ASC") or die("Cannot query 676: ".mysql_error());
+
+		while(list($indicator_code)=mysql_fetch_array($q_data_set)){
+			$indicator_value = 0;
+
+			$get_data_value = mysql_query("SELECT $indicator_code FROM $tbl_name WHERE HFHUDCODE='$facility_id' AND MONTH='$month_padded' AND YEAR='$year'") or die("Cannot query 679: ".mysql_error());	
+			list($indicator_value) = mysql_fetch_array($get_data_value);
+			array_push($arr_onlinesys_data,"'".$indicator_value."'");
+		}
+		array_push($arr_onlinesys_data,"'".'Y'."'");
+
+		$str_onlinesys_data = implode(",",$arr_onlinesys_data);
+		return $str_onlinesys_data;
+	}
+
+
+	function create_onlinesys_file($str_onlinesys_data,$file_name){
+		$arr_file_name = explode(".",$file_name);
+		$new_file_name = $arr_file_name[0].'_onlinesys.'.$arr_file_name[1];
+
+		if($file_buffer = fopen($this->directory.$new_file_name,'w')):
+			fwrite($file_buffer,$str_onlinesys_data);
+			fclose($file_buffer);
+			return $new_file_name;
+		endif;
 	}
 
 	} //end class	
