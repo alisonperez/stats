@@ -336,7 +336,22 @@
 							$q_insert = mysql_query("INSERT INTO $tbl_name SET HFHUDCODE='$arr_content[0]',REGCODE='$arr_content[1]', PROVCODE='$arr_content[2]',CITYCODE='$arr_content[3]',BGYCODE='$arr_content[4]',MONTH='$arr_content[5]',YEAR='$arr_content[6]'");
 							
 							for($i=7;$i<count($arr_content);$i++){
-								$q_update = mysql_query("UPDATE $tbl_name SET $arr_field[$i]='$arr_content[$i]' WHERE HFHUDCODE='$arr_content[0]' AND REGCODE='$arr_content[1]' AND PROVCODE='$arr_content[2]' AND CITYCODE='$arr_content[3]' AND BGYCODE='$arr_content[4]' AND MONTH='$arr_content[5]' AND YEAR='$arr_content[6]'") or die("Cannot query 324: ".mysql_error());
+								
+								echo $arr_field[$i].'/'.$arr_content[$i].'/'.$i."<br>";
+
+								if($i>=19 && $i<=30): //in the array, this is the NA of previous period
+
+									$index = $i + 48;
+
+									$q_update = mysql_query("UPDATE $tbl_name SET $arr_field[$index]='$arr_content[$i]' WHERE HFHUDCODE='$arr_content[0]' AND REGCODE='$arr_content[1]' AND PROVCODE='$arr_content[2]' AND CITYCODE='$arr_content[3]' AND BGYCODE='$arr_content[4]' AND MONTH='$arr_content[5]' AND YEAR='$arr_content[6]'") or die("Cannot query 343: ".mysql_error());
+								elseif($i>=67 && $i<=78): //in the array, this is the NA of current period
+
+									$index = $i - 48;
+
+									$q_update = mysql_query("UPDATE $tbl_name SET $arr_field[$index]='$arr_content[$i]' WHERE HFHUDCODE='$arr_content[0]' AND REGCODE='$arr_content[1]' AND PROVCODE='$arr_content[2]' AND CITYCODE='$arr_content[3]' AND BGYCODE='$arr_content[4]' AND MONTH='$arr_content[5]' AND YEAR='$arr_content[6]'") or die("Cannot query 343: ".mysql_error());									
+								else:
+									$q_update = mysql_query("UPDATE $tbl_name SET $arr_field[$i]='$arr_content[$i]' WHERE HFHUDCODE='$arr_content[0]' AND REGCODE='$arr_content[1]' AND PROVCODE='$arr_content[2]' AND CITYCODE='$arr_content[3]' AND BGYCODE='$arr_content[4]' AND MONTH='$arr_content[5]' AND YEAR='$arr_content[6]'") or die("Cannot query 324: ".mysql_error());
+								endif;
 							}
 						else:
 						
@@ -668,7 +683,7 @@
 		$tbl_name = $this->arr_program_db[$prog_id];
 		$month_padded = sprintf('%02d', $month); 
 
-		$q_tbl = mysql_query("SELECT REGCODE, PROVCODE CITYCODE, BGYCODE FROM $tbl_name WHERE HFHUDCODE='$facility_id' AND MONTH=$month AND YEAR='$year'") or die("Cannot query 666: ".mysql_error());
+		$q_tbl = mysql_query("SELECT REGCODE, PROVCODE, CITYCODE, BGYCODE FROM $tbl_name WHERE HFHUDCODE='$facility_id' AND MONTH=$month AND YEAR='$year'") or die("Cannot query 666: ".mysql_error());
 	
 		list($reg_code,$prov_code,$citymun_code,$bgy_code) = mysql_fetch_array($q_tbl);
 
@@ -677,7 +692,7 @@
 
 		//choose data sets in lib_indicator table for inclusion
 
-		$q_data_set = mysql_query("SELECT indicator_code FROM lib_indicator WHERE exist_onlinesys='Y' AND prog_id='$prog_id' ORDER BY sequence ASC") or die("Cannot query 676: ".mysql_error());
+		$q_data_set = mysql_query("SELECT indicator_code FROM lib_indicator WHERE exist_onlinesys='Y' AND prog_id='$prog_id' AND sequence!=0 ORDER BY sequence ASC") or die("Cannot query 676: ".mysql_error());
 
 		while(list($indicator_code)=mysql_fetch_array($q_data_set)){
 			$indicator_value = 0;
