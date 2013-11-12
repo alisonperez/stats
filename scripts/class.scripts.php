@@ -195,7 +195,7 @@
 				$file_handle = @fopen($file_name,'r');
 					while(!feof($file_handle)){
 						$lines[] = fgets($file_handle,4096);
-//print_r($lines);
+
 						if(!feof($file_handle))
 							$this->insert_db($lines,$get_args,$tbl_name);
 					}
@@ -337,7 +337,7 @@
 							
 							for($i=7;$i<count($arr_content);$i++){
 								
-								echo $arr_field[$i].'/'.$arr_content[$i].'/'.$i."<br>";
+								//echo $arr_field[$i].'/'.$arr_content[$i].'/'.$i."<br>";
 
 								if($i>=19 && $i<=30): //in the array, this is the NA of previous period
 
@@ -568,6 +568,10 @@
 		if($prog_id != 'morbidity'):
 			$str_onlinesys_data = $this->get_onlinesys_datasets($prog_id,$facility_id,$month,$year);
 			$file_name = $this->create_onlinesys_file($str_onlinesys_data,$file_name);
+
+		elseif($prog_id=='morbidity'):
+			$str_onlinesys_data = $this->get_onlinesys_datasets_morbidity($prog_id,$facility_id,$month,$year);		$file_name = $this->create_onlinesys_file_morbidity($str_onlinesys_data,$file_name);	
+		else:
 		endif;
 
 		$prog_label = substr($this->arr_program_db[$prog_id],5);
@@ -694,19 +698,44 @@
 
 		$q_data_set = mysql_query("SELECT indicator_code FROM lib_indicator WHERE exist_onlinesys='Y' AND prog_id='$prog_id' AND sequence!=0 ORDER BY sequence ASC") or die("Cannot query 676: ".mysql_error());
 
-		while(list($indicator_code)=mysql_fetch_array($q_data_set)){
+		while(list($indicator_code)=mysql_fetch_array($q_data_set)){ 
 			$indicator_value = 0;
 
 			$get_data_value = mysql_query("SELECT $indicator_code FROM $tbl_name WHERE HFHUDCODE='$facility_id' AND MONTH='$month_padded' AND YEAR='$year'") or die("Cannot query 679: ".mysql_error());	
 			list($indicator_value) = mysql_fetch_array($get_data_value);
 			array_push($arr_onlinesys_data,"'".$indicator_value."'");
 		}
-		array_push($arr_onlinesys_data,"'".'Y'."'");
+		array_push($arr_onlinesys_data,"'".'Y'."'"); 
 
 		$str_onlinesys_data = implode(",",$arr_onlinesys_data);
 		return $str_onlinesys_data;
 	}
 
+	function get_onlinesys_datasets_morbidity($prog_id,$facility_id,$month,$year){
+		$arr_onlinesys_data = array();
+		$tbl_name = $this->arr_program_db[$prog_id];
+		$month_padded = sprintf('%02d', $month); 
+
+		$q_tbl = mysql_query("SELECT * FROM $tbl_name WHERE HFHUDCODE='$facility_id' AND MONTH=$month AND YEAR='$year'") or die("Cannot query 718: ".mysql_error());
+	
+		while($arr_result = mysql_fetch_array($q_tbl)){
+			$q_data_set = mysql_query("SELECT indicator_code FROM lib_indicator WHERE exist_onlinesys='Y' AND prog_id='$prog_id' AND sequence!=0 ORDER BY sequence ASC") or die("Cannot query 676: ".mysql_error());
+			
+			if(mysql_num_rows($q_data_set)!=0): 
+				array_push($arr_onlinesys_data,"'".$arr_result['HFHUDCODE']."'","'".$arr_result['REGCODE']."'","'".$arr_result['PROVCODE']."'","'".$arr_result['CITYCODE']."'","'".$arr_result['BGYCODE']."'","'".$month."'","'".$year."'","'".$arr_result['ICD10_CODE']."'");
+				while(list($indicator_code)=mysql_fetch_array($q_data_set)){
+					array_push($arr_onlinesys_data,"'".$arr_result[$indicator_code]."'");
+				}
+	
+				array_push($arr_onlinesys_data,"'".'Y'."'"); 			
+			else: 
+			endif;			
+		}	
+
+		$str_onlinesys_data = implode(",",$arr_onlinesys_data);
+		return $str_onlinesys_data;
+		
+	}
 
 	function create_onlinesys_file($str_onlinesys_data,$file_name){
 		$arr_file_name = explode(".",$file_name);
@@ -714,6 +743,24 @@
 
 		if($file_buffer = fopen($this->directory.$new_file_name,'w')):
 			fwrite($file_buffer,$str_onlinesys_data);
+			fclose($file_buffer);
+			return $new_file_name;
+		endif;
+	}
+
+	function create_onlinesys_file_morbidity($str_onlinesys_data,$file_name){
+		$arr_file_name = explode(".",$file_name);
+		$new_file_name = $arr_file_name[0].'_onlinesys.'.$arr_file_name[1];
+		$arr_file_content = explode(",",$str_onlinesys_data);
+
+		if($file_buffer = fopen($this->directory.$new_file_name,'w')):
+			foreach($arr_file_content as $key=>$value){
+				if($value=="'Y'"):  
+					fwrite($file_buffer,$value."\n");
+				else:
+					fwrite($file_buffer,$value.",");
+				endif;
+			}
 			fclose($file_buffer);
 			return $new_file_name;
 		endif;
