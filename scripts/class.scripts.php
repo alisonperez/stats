@@ -284,8 +284,9 @@
 					
 					break;
 
-				case 'childcare': //uses falling through to execute both child care and fp codes
-					/*$arr_content = explode(',',$csv_content[0]);
+				case 'childcare': 
+					$arr_content = explode(',',$csv_content[0]);
+					
 					$arr_field = array();
 					foreach($arr_content as $key=>$value){
 						$arr_content[$key] = str_replace("'","",$arr_content[$key]);
@@ -314,9 +315,9 @@
 					else:	
 						echo "The data sets in the file do not match the contents of the database. Please delete and re-upload the right file.";					
 					endif;				
-
+					
 					break;
-				    */
+				    
 				case 'fp':
 					$arr_content = explode(',',$csv_content[0]);
 					$arr_field = array();
