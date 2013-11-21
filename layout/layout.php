@@ -15,7 +15,8 @@
 	function display_banner(){
 		
   		echo "<tr><td colspan='2'>";
-		echo "<img src='images/stats.gif' width='1500px' height='120px'/>";	
+		//echo "<img src='images/stats.gif' width='1500px' height='120px'/>";	
+		echo "<img src='images/stats.gif' width='100%' height='100%'/>";	
 		//echo "<img src='images/stats.gif' />";	
   		echo "</td>";
   		echo "</tr>";
@@ -330,46 +331,43 @@
 		  echo "<table>";
 		  echo "<form action='$_SERVER[PHP_SELF]' name='form_show_stats' method='POST'>";
 		  
-		  echo "<tr><td valign='top'>";
+		  echo "<tr><td width='45%'valign='top'>";
 		  
 		  echo "<table>";
 		  echo "<tr><td colspan='2' class='textbox-design'>SET VALUES FOR THE QUERY CATEGORIES</td></tr>";
 		  echo "<tr class='textbox-label'>";
 		  echo "<td valign='top'>&nbsp;&nbsp;Select Program&nbsp;&nbsp;</td><td>";
 		  $this->display_programs();		  
-		  echo "</td></tr>";
-		  
+		  echo "</td></tr>";		  
 		  echo "<tr class='textbox-label'><td>";
 		  echo "&nbsp;&nbsp;Set Period&nbsp;&nbsp;</td><td>";
 		  $this->display_period();
 		  echo "</td>";
-		  echo "</tr>";
-		  
-		  
+		  echo "</tr>";		  		  
 		  echo "<tr><td>";		  
 		  echo "<input type='submit' name='submit_query' value='Submit Query' />";
 		  echo "</td>";
-		  echo "</tr>";
-		  		  
+		  echo "</tr>";		  		  
 		  echo "</table>";
 		  
 		  echo "</td>";
-		  echo "<td>&nbsp;&nbsp;&nbsp;</td>";
-		  echo "<td valign='top'>";
+
+		  echo "<td width='45%' valign='top'>";
 		  echo "<table>";
   		  echo "<tr class='textbox-design'><td valign='top'>";
-		  echo "Set Demographics</td></tr>";
-		  
+		  echo "Set Demographics</td></tr>";		  
 		  echo "<tr><td>";
 		  $this->show_geographic_area();
 		  echo "</td></tr>";
 		  echo "</table>";		  
-  		  echo "</td>";
+  		  echo "</td>";		  
 		  
+		  echo "<td>&nbsp;&nbsp;&nbsp;</td>";
 		  echo "</tr>";
 
-
 		  echo "</form>";		  		  
+
+		  echo "</td></tr>";
 		  echo "</table>";
 	}
 
@@ -394,13 +392,21 @@
 		echo "<form action='' method='POST'>";
 		echo "<tr bgcolor='99EECC'>";
 		echo "<td colspan='2' align='right' valign='top'>";
-		echo "<a href='$_SERVER[PHP_SELF]'><img src='./images/btn_home.png' width=100 height=40 /></a>";
+		/*echo "<a href='$_SERVER[PHP_SELF]'><img src='./images/btn_home.png' width=100 height=40 /></a>";
 		echo "<a href='$_SERVER[PHP_SELF]?id=upload'><img src='./images/btn_upload.png' width=100 height=40 /></a>";
 		echo "<a href='$_SERVER[PHP_SELF]?id=stats'><img src='./images/btn_stat.png' width=100 height=40 /></a>";
 		echo "<a href='$_SERVER[PHP_SELF]?id=map'><img src='./images/btn_map.png' width=100 height=40 /></a>";
 		echo "<a href='$_SERVER[PHP_SELF]?id=download'><img src='./images/btn_download.png' width=100 height=40 /></a>";
-		echo "<a href='$_SERVER[PHP_SELF]?id=user' alt='click to change user account details'><img src='./images/btn_account.png' width=100 height=42 /></a>"; 
-		
+		echo "<a href='$_SERVER[PHP_SELF]?id=user' alt='click to change user account details'><img src='./images/btn_account.png' width=100 height=42 /></a>"; */
+
+		echo "<a href='$_SERVER[PHP_SELF]' alt='click to change user account details'>HOME</a> | "; 
+		echo "<a href='$_SERVER[PHP_SELF]?id=upload' alt='click to change user account details'>UPLOAD</a> | "; 
+		echo "<a href='$_SERVER[PHP_SELF]?id=stats' alt='click to change user account details'>STATISTICS</a> | "; 
+		echo "<a href='$_SERVER[PHP_SELF]?id=map' alt='click to change user account details'>VIEW MAP</a> | "; 
+		echo "<a href='$_SERVER[PHP_SELF]?id=download' alt='click to change user account details'>DOWNLOAD</a> | "; 
+		echo "<a href='$_SERVER[PHP_SELF]?id=user' alt='click to change user account details'>USER ACCOUNTS</a> | "; 
+		echo "<a href='$_SERVER[PHP_SELF]?id=admin' alt='click to change user account details'>ADMIN</a> | "; 
+
 		//echo $_SESSION[user_name].($_SESSION[facility_name]);
 		echo "<input type='submit' name='submit_logout' value='Log Out'/>";
 		echo "</td>";

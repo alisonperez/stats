@@ -117,8 +117,8 @@ echo "<body>";
 		$layout->show_user_list();
   		break;		
   default:
-	  	$layout->show_stats();
-		echo "<tr><td>";
+	  	$layout->show_stats(); 
+		echo "<tr><td colspan='3'>";
 		$layout->disp_tabular_form();
 		echo "</td></tr>";
 		
