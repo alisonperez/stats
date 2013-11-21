@@ -71,7 +71,7 @@ echo "<body>";
   
   case "stats":
   	$layout->show_stats();
-	echo "<tr><td>";
+	echo "<tr><td colspan='3'>";
 	$layout->disp_tabular_form();
 	echo "</td></tr>";
   	break;
