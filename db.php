@@ -2,6 +2,8 @@
 
         //Alison O. Perez
         //Stats Aggregator 2012-2013
+        //Main database configuration file
+        
 	function connect_db(){
 
 	$dbname = 'stats_new';
