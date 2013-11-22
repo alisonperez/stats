@@ -1,6 +1,6 @@
 <?php
 
-			/* 1. check the file if it is in CSV format 2. check if the file has period code correctly, 3. check if the CSV filename has program 	code on it, 4. check if the file size is not too large,  */
+	/* 1. check the file if it is in CSV format 2. check if the file has period code correctly, 3. check if the CSV filename has program 	code on it, 4. check if the file size is not too large,  */
 	class scripts{
 	
 		function scripts(){
@@ -692,7 +692,7 @@
 	
 		list($reg_code,$prov_code,$citymun_code,$bgy_code) = mysql_fetch_array($q_tbl);
 
-		array_push($arr_onlinesys_data,"'".$facility_id."'","'".$reg_code."'","'".$prov_code."'","'".$citymun_code."'","'".$bgy_code."'","'".$month."'","'".$year."'");
+		array_push($arr_onlinesys_data,"'".$facility_id."'","'".$reg_code."'","'".$prov_code."'","'".$citymun_code."'","'".$bgy_code."'","'".$month_padded."'","'".$year."'");
 
 
 		//choose data sets in lib_indicator table for inclusion
