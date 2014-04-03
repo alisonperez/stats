@@ -470,7 +470,10 @@
 		echo "</td></tr>";
 		
 		echo "<tr class='textbox-label'><td>Municipality</td><td>";
-		$q_municipality = mysql_query("SELECT * FROM m_lib_psgc_code WHERE province_code='369' AND SUBSTRING(barangay_id,-3)='000' AND SUBSTRING(municipality_code,-2)!='00' ORDER by place_name ASC") or die("Cannot query 350: ".mysql_error());
+		//$q_municipality = mysql_query("SELECT * FROM m_lib_psgc_code WHERE province_code='369' AND SUBSTRING(barangay_id,-3)='000' AND SUBSTRING(municipality_code,-2)!='00' ORDER by place_name ASC") or die("Cannot query 350: ".mysql_error());
+
+		$q_municipality = mysql_query("SELECT * FROM m_lib_psgc_code WHERE SUBSTRING(barangay_id,-3)='000' AND SUBSTRING(municipality_code,-2)!='00' ORDER by place_name ASC") or die("Cannot query 350: ".mysql_error());
+
 		echo "<select name='sel_mun' size='1'>";
 			while($r_mun = mysql_fetch_array($q_municipality)){
 				if($r_mun["municipality_code"]==$psgc_citymuncode):					
@@ -484,7 +487,9 @@
 		
 		echo "<tr class='textbox-label'><td>Health Facility</td><td>";
 
-		$q_rhu = mysql_query("SELECT facility_id, doh_class_id, facility_name FROM m_lib_health_facility WHERE psgc_provcode='369' ORDER by facility_name") or die("Cannot query 360 ".mysql_error());
+		//$q_rhu = mysql_query("SELECT facility_id, doh_class_id, facility_name FROM m_lib_health_facility WHERE psgc_provcode='369' ORDER by facility_name") or die("Cannot query 360 ".mysql_error());
+
+		$q_rhu = mysql_query("SELECT facility_id, doh_class_id, facility_name FROM m_lib_health_facility ORDER by facility_name DESC") or die("Cannot query 360 ".mysql_error());
 		
 		echo "<select name='sel_hf' size='1'>";
 			while($r_rhu = mysql_fetch_array($q_rhu)){
